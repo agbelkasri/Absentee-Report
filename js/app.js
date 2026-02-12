@@ -30,6 +30,8 @@ function seedDemoData() {
   ];
   const reasons = ['vacation', 'sick', 'personal', 'family_emergency', 'jury_duty', 'bereavement', 'other'];
   const types = ['planned', 'planned', 'planned', 'unplanned', 'unplanned'];
+  const laborTypes = ['direct', 'direct', 'direct', 'indirect', 'indirect'];
+  const shifts = ['1st', '1st', '1st', '2nd', '2nd'];
   const durations = ['full', 'full', 'full', 'half_am', 'half_pm'];
 
   const absences = [];
@@ -64,6 +66,8 @@ function seedDemoData() {
         plantId: plantIds[Math.floor(Math.random() * plantIds.length)],
         date,
         type,
+        laborType: laborTypes[Math.floor(Math.random() * laborTypes.length)],
+        shift: shifts[Math.floor(Math.random() * shifts.length)],
         reason,
         duration,
         durationHours: duration === 'full' ? 8 : 4,
@@ -99,8 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
     '#monthly': monthlyView
   });
 
-  // Seed demo data if empty
-  if (Store.isEmpty()) {
+  // Seed demo data if empty or if data is missing new fields (laborType/shift)
+  const needsReseed = Store.isEmpty() || (() => {
+    const sample = Store.getAbsences({})[0];
+    return sample && !sample.laborType;
+  })();
+  if (needsReseed) {
     seedDemoData();
   }
 });

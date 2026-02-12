@@ -169,6 +169,26 @@
   color: var(--color-primary);
 }
 
+.badge--direct {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge--indirect {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge--1st {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge--2nd {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
 /* Data Table */
 .table-wrapper {
   overflow-x: auto;

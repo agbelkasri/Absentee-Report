@@ -108,6 +108,8 @@ const Store = {
       date: record.date,
       type: record.type,
       reason: record.reason,
+      laborType: record.laborType || 'direct',
+      shift: record.shift || '1st',
       duration: record.duration,
       durationHours: record.durationHours || (record.duration === 'full' ? 8 : 4),
       notes: (record.notes || '').trim(),

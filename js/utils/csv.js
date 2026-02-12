@@ -12,12 +12,14 @@ export function exportToCSV(absences, plants, filename = 'absences.csv') {
     full: 'Full Day', half_am: 'Half Day (AM)', half_pm: 'Half Day (PM)', custom: 'Custom'
   };
 
-  const headers = ['Date', 'Employee', 'Plant', 'Type', 'Reason', 'Duration', 'Hours', 'Notes'];
+  const headers = ['Date', 'Employee', 'Plant', 'Type', 'Labor Type', 'Shift', 'Reason', 'Duration', 'Hours', 'Notes'];
   const rows = absences.map(a => [
     a.date,
     a.employeeName,
     plantMap[a.plantId] || a.plantId,
     a.type === 'planned' ? 'Planned' : 'Unplanned',
+    (a.laborType || 'direct') === 'direct' ? 'Direct' : 'Indirect',
+    (a.shift || '1st') === '1st' ? '1st Shift' : '2nd Shift',
     reasonLabels[a.reason] || a.reason,
     durationLabels[a.duration] || a.duration,
     a.durationHours,

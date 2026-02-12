@@ -78,6 +78,35 @@ const submitView = {
 
           <div class="absence-form__row">
             <div class="form-group">
+              <label class="form-label form-label--required">Labor Type</label>
+              <div class="radio-group" style="margin-top: 4px;">
+                <label class="radio-option">
+                  <input type="radio" name="abs-labor-type" value="direct" ${!existing || existing.laborType === 'direct' ? 'checked' : ''}>
+                  Direct
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="abs-labor-type" value="indirect" ${existing && existing.laborType === 'indirect' ? 'checked' : ''}>
+                  Indirect
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label form-label--required">Shift</label>
+              <div class="radio-group" style="margin-top: 4px;">
+                <label class="radio-option">
+                  <input type="radio" name="abs-shift" value="1st" ${!existing || existing.shift === '1st' ? 'checked' : ''}>
+                  1st Shift
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="abs-shift" value="2nd" ${existing && existing.shift === '2nd' ? 'checked' : ''}>
+                  2nd Shift
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="absence-form__row">
+            <div class="form-group">
               <label class="form-label form-label--required" for="abs-reason">Reason</label>
               <select id="abs-reason" class="form-select">
                 ${REASONS.map(r => `<option value="${r.value}" ${existing && existing.reason === r.value ? 'selected' : ''}>${r.label}</option>`).join('')}
@@ -143,6 +172,8 @@ const submitView = {
     const plantId = container.querySelector('#abs-plant').value;
     const date = container.querySelector('#abs-date').value;
     const type = container.querySelector('input[name="abs-type"]:checked')?.value;
+    const laborType = container.querySelector('input[name="abs-labor-type"]:checked')?.value;
+    const shift = container.querySelector('input[name="abs-shift"]:checked')?.value;
     const reason = container.querySelector('#abs-reason').value;
     const duration = container.querySelector('#abs-duration').value;
     const customHours = container.querySelector('#abs-custom-hours').value;
@@ -174,6 +205,8 @@ const submitView = {
       plantId,
       date,
       type,
+      laborType,
+      shift,
       reason,
       duration,
       durationHours: getHoursForDuration(duration, customHours),

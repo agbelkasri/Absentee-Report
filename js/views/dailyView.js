@@ -179,9 +179,10 @@ function renderTable(absences) {
               <th data-sort="employeeName" class="${sortCol === 'employeeName' ? 'sorted' : ''}">Employee ${sortIcon('employeeName')}</th>
               <th data-sort="plantId" class="${sortCol === 'plantId' ? 'sorted' : ''}">Plant ${sortIcon('plantId')}</th>
               <th data-sort="type" class="${sortCol === 'type' ? 'sorted' : ''}">Type ${sortIcon('type')}</th>
+              <th data-sort="laborType" class="${sortCol === 'laborType' ? 'sorted' : ''}">Labor ${sortIcon('laborType')}</th>
+              <th data-sort="shift" class="${sortCol === 'shift' ? 'sorted' : ''}">Shift ${sortIcon('shift')}</th>
               <th data-sort="reason" class="${sortCol === 'reason' ? 'sorted' : ''}">Reason ${sortIcon('reason')}</th>
               <th>Duration</th>
-              <th>Notes</th>
               <th style="text-align: right">Actions</th>
             </tr>
           </thead>
@@ -191,9 +192,10 @@ function renderTable(absences) {
                 <td><strong>${escapeHtml(a.employeeName)}</strong></td>
                 <td>${escapeHtml(Store.getPlantName(a.plantId))}</td>
                 <td><span class="badge badge--${a.type}">${a.type === 'planned' ? 'Planned' : 'Unplanned'}</span></td>
+                <td><span class="badge badge--${a.laborType || 'direct'}">${(a.laborType || 'direct') === 'direct' ? 'Direct' : 'Indirect'}</span></td>
+                <td><span class="badge badge--${a.shift || '1st'}">${(a.shift || '1st') === '1st' ? '1st' : '2nd'}</span></td>
                 <td>${REASON_LABELS[a.reason] || a.reason}</td>
                 <td>${DURATION_LABELS[a.duration] || a.duration}${a.duration === 'custom' ? ` (${a.durationHours}h)` : ''}</td>
-                <td class="text-muted text-sm">${escapeHtml(a.notes || '-')}</td>
                 <td>
                   <div class="actions-cell">
                     <button class="btn btn--ghost btn--sm btn-edit" data-id="${a.id}" title="Edit">

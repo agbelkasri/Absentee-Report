@@ -105,6 +105,10 @@ function render(container) {
       { label: 'Total Absences', value: total, trend: momChange, trendDirection: momDirection },
       { label: 'Planned', value: planned },
       { label: 'Unplanned', value: unplanned },
+      { label: 'Direct Labor', value: absences.filter(a => (a.laborType || 'direct') === 'direct').length },
+      { label: 'Indirect Labor', value: absences.filter(a => a.laborType === 'indirect').length },
+      { label: '1st Shift', value: absences.filter(a => (a.shift || '1st') === '1st').length },
+      { label: '2nd Shift', value: absences.filter(a => a.shift === '2nd').length },
       { label: 'Avg / Working Day', value: avgPerDay },
       { label: 'Peak Day', value: peakDateStr },
       { label: 'Top Reason', value: REASON_LABELS[topReason] || topReason }
@@ -136,6 +140,60 @@ function render(container) {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="card chart-card">
+        <div class="card__header">
+          <span class="card__title">Direct vs Indirect Labor</span>
+        </div>
+        <div class="card__body">
+          <div class="progress-ring-wrapper">
+            <canvas id="labor-donut" width="180" height="180"></canvas>
+            <div class="progress-ring__legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #1e40af"></span>
+                <span>Direct: ${absences.filter(a => (a.laborType || 'direct') === 'direct').length}</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #d97706"></span>
+                <span>Indirect: ${absences.filter(a => a.laborType === 'indirect').length}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="card__header">
+          <span class="card__title">1st Shift vs 2nd Shift</span>
+        </div>
+        <div class="card__body">
+          <div class="progress-ring-wrapper">
+            <canvas id="shift-donut" width="180" height="180"></canvas>
+            <div class="progress-ring__legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #065f46"></span>
+                <span>1st Shift: ${absences.filter(a => (a.shift || '1st') === '1st').length}</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #7c3aed"></span>
+                <span>2nd Shift: ${absences.filter(a => a.shift === '2nd').length}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-lg">
+      <div class="card__header">
+        <span class="card__title">Labor Type &times; Shift Breakdown</span>
+        <span class="text-sm text-muted">Contrasting direct/indirect across shifts</span>
+      </div>
+      <div class="card__body chart-container">
+        <canvas id="labor-shift-chart"></canvas>
       </div>
     </div>
 
@@ -233,6 +291,8 @@ function render(container) {
           <div style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);">
             <strong>${escapeHtml(a.employeeName)}</strong>
             <span class="badge badge--${a.type}" style="margin-left: var(--space-sm);">${a.type === 'planned' ? 'Planned' : 'Unplanned'}</span>
+            <span class="badge badge--${a.laborType || 'direct'}" style="margin-left: 4px;">${(a.laborType || 'direct') === 'direct' ? 'Direct' : 'Indirect'}</span>
+            <span class="badge badge--${a.shift || '1st'}" style="margin-left: 4px;">${(a.shift || '1st') === '1st' ? '1st' : '2nd'}</span>
             <div class="text-sm text-muted" style="margin-top: 2px;">
               ${REASON_LABELS[a.reason] || a.reason} &middot; ${Store.getPlantName(a.plantId)}
             </div>
@@ -248,6 +308,35 @@ function render(container) {
     { value: planned, color: COLORS.planned },
     { value: unplanned, color: COLORS.unplanned }
   ], { size: 180, lineWidth: 28, centerText: String(total) });
+
+  // Labor type donut
+  const directCount = absences.filter(a => (a.laborType || 'direct') === 'direct').length;
+  const indirectCount = absences.filter(a => a.laborType === 'indirect').length;
+  renderDonutChart(container.querySelector('#labor-donut'), [
+    { value: directCount, color: '#1e40af' },
+    { value: indirectCount, color: '#d97706' }
+  ], { size: 180, lineWidth: 28, centerText: String(total) });
+
+  // Shift donut
+  const shift1Count = absences.filter(a => (a.shift || '1st') === '1st').length;
+  const shift2Count = absences.filter(a => a.shift === '2nd').length;
+  renderDonutChart(container.querySelector('#shift-donut'), [
+    { value: shift1Count, color: '#065f46' },
+    { value: shift2Count, color: '#7c3aed' }
+  ], { size: 180, lineWidth: 28, centerText: String(total) });
+
+  // Labor Type x Shift grouped bar chart
+  const laborShiftCanvas = container.querySelector('#labor-shift-chart');
+  const direct1st = absences.filter(a => (a.laborType || 'direct') === 'direct' && (a.shift || '1st') === '1st').length;
+  const direct2nd = absences.filter(a => (a.laborType || 'direct') === 'direct' && a.shift === '2nd').length;
+  const indirect1st = absences.filter(a => a.laborType === 'indirect' && (a.shift || '1st') === '1st').length;
+  const indirect2nd = absences.filter(a => a.laborType === 'indirect' && a.shift === '2nd').length;
+  renderBarChart(laborShiftCanvas, [
+    { label: 'Direct / 1st', value: direct1st, color: '#1e40af' },
+    { label: 'Direct / 2nd', value: direct2nd, color: '#3b82f6' },
+    { label: 'Indirect / 1st', value: indirect1st, color: '#d97706' },
+    { label: 'Indirect / 2nd', value: indirect2nd, color: '#fbbf24' }
+  ], { height: 220, barGap: 16, showValues: true });
 
   // Reason donut
   const reasonSegments = Object.entries(reasonCounts).map(([reason, count]) => ({
