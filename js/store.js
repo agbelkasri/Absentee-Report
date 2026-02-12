@@ -6,9 +6,9 @@ const KEYS = {
 };
 
 const DEFAULT_PLANTS = [
-  { id: 'plant-001', name: 'Plant A - Detroit' },
-  { id: 'plant-002', name: 'Plant B - Chicago' },
-  { id: 'plant-003', name: 'Plant C - Austin' }
+  { id: 'plant-001', name: 'EAP' },
+  { id: 'plant-002', name: 'GAP' },
+  { id: 'plant-003', name: 'SLP' }
 ];
 
 function load(key) {
@@ -34,9 +34,8 @@ function notify() {
 
 const Store = {
   init() {
-    if (!load(KEYS.plants)) {
-      save(KEYS.plants, DEFAULT_PLANTS);
-    }
+    // Always update plants to match defaults
+    save(KEYS.plants, DEFAULT_PLANTS);
     if (!load(KEYS.absences)) {
       save(KEYS.absences, []);
     }
