@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Absentee Report</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/reports.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header__inner">
+      <div class="app-header__brand">
+        <svg class="app-header__icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <h1 class="app-header__title">Absentee Report</h1>
+      </div>
+      <div class="app-header__controls">
+        <div class="plant-selector">
+          <label for="global-plant-filter" class="plant-selector__label">Plant:</label>
+          <select id="global-plant-filter" class="plant-selector__select"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="app-nav" id="app-nav"></nav>
+
+  <main class="app-main">
+    <div id="app" class="view-container"></div>
+  </main>
+
+  <div id="toast-container" class="toast-container"></div>
+  <div id="modal-container"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
